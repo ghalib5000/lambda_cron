@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+  
+Resources:
+  test:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: .
+      Handler: lambda.lambda_handler
+      Runtime: python3.9
+      Timeout: 10
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: get
+        PostHelloWorld:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: post
+        
