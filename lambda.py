@@ -1,12 +1,14 @@
 from typing import Union
 from fastapi import FastAPI
 import current_date
-import rand_checker
+import alert
 import requests
 import json
+import ping
+import check
 from mangum import Mangum
+import sum
 from typing import List
-app = FastAPI()
 
 def return_response(message,statusCode):
     response = {
@@ -17,40 +19,45 @@ def return_response(message,statusCode):
     return response
 
 
+app = FastAPI()
 
 @app.get("/")
 def postping(): 
-    return return_response("PONG!!!", 200)
+    response = ping.ping()
+    return return_response(response, 200)
 
 @app.get("/ping")
 def postping():
-    return return_response("PONG!!!", 200)
+    response = ping.ping()
+    return return_response(response, 200)
 
 @app.post('/sum')
 def sum_num(numbers: List[int]):
-    result = sum(numbers)
-    return {'the sum of your numbers is': result}
+    result = sum.sum_num(numbers)
+    return return_response(result, 200)
 
 @app.get("/alert")
-def alert():
-    return rand_checker.randAlert()
+def getalert():
+    response= alert.randAlert()
+    return return_response(response, 200)
 
 @app.get("/date")
 def getdate():
-    return {"The current date and time is": current_date.get_current_date()}
+    response = current_date.getdate()
+    return return_response(response, 200)
 
 @app.get("/day")
-def getday():
-    return {"The current day is": current_date.get_current_day()}
+def getday():    
+    response = current_date.getday()
+    return return_response(response, 200)
 
 @app.get("/version")
 def getcheck():
-    api = "https://api.github.com/repos/Ryujinx/release-channel-master/releases/latest"
-    response_API = requests.get(api)
-    return {"the current version of ryujinx is": response_API.json()["tag_name"]}
+    response = check.version()
+    return return_response(response, 200)
 
 
 lambda_handler = Mangum(app, lifespan="off")
 
-#lambda_handler(1, 2)
+
 #uvicorn main:app --reload
